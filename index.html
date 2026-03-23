@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>OSINT Tool</title>
+    <style>
+        body {
+            background: black;
+            color: #00ff00;
+            font-family: monospace;
+            text-align: center;
+        }
+
+        h1 {
+            text-shadow: 0 0 10px #00ff00;
+        }
+
+        input, button {
+            padding: 10px;
+            margin: 10px;
+            border: none;
+            background: #111;
+            color: #00ff00;
+            border: 1px solid #00ff00;
+        }
+
+        button:hover {
+            background: #00ff00;
+            color: black;
+        }
+
+        .box {
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #00ff00;
+            box-shadow: 0 0 10px #00ff00;
+            text-align: left;
+        }
+
+        pre {
+            white-space: pre-wrap;
+        }
+
+        .spinner {
+        border: 4px solid #111;
+        border-top: 4px solid #00ff00;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: auto;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    </style>
+</head>
+<body>
+
+    <h1>⚡ OSINT RECON TOOL ⚡</h1>
+
+    <form method="POST" onsubmit="showLoader()">
+    <input type="text" name="domain" placeholder="Enter domain" required>
+    <button type="submit">SCAN</button>
+</form>
+
+<div id="loader" style="display:none;">
+    <h2>🔍 Scanning</h2>
+    <div class="spinner"></div>
+</div>
+
+    {% if result %}
+    <div class="box">
+        <h2>📡 Target Info</h2>
+        <p><b>Domain:</b> {{ result.domain }}</p>
+        <p><b>IP:</b> {{ result.ip }}</p>
+    </div>
+
+    <div class="box">
+        <h2>🌐 WHOIS</h2>
+        <p><b>Registrar:</b> {{ result.whois.registrar }}</p>
+    </div>
+
+    <div class="box">
+        <h2>🔍 Subdomains</h2>
+        {% for sub in result.subdomains %}
+            <p>{{ sub }}</p>
+        {% endfor %}
+    </div>
+
+    <div class="box">
+        <h2>🚪 Nmap Scan</h2>
+        <pre>{{ result.nmap }}</pre>
+    </div>
+    {% endif %}
+
+
+<h2 id="scanText"></h2>
+
+<script>
+let text = "Scanning target...";
+let i = 0;
+
+function typeEffect() {
+    if (i < text.length) {
+        document.getElementById("scanText").innerHTML += text.charAt(i);
+        i++;
+        setTimeout(typeEffect, 50);
+    }
+}
+
+function showLoader() {
+    document.getElementById("loader").style.display = "block";
+    typeEffect();
+}
+</script>
+    
+</body>
+</html>
